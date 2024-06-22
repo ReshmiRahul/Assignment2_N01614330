@@ -7,42 +7,47 @@ using System.Web.Http;
 
 namespace Assignment2_N01614330.Controllers
 {
+    /// <summary>
+    /// Controller for solving the J3 problem - Temperature conversion between Celsius and Fahrenheit
+    /// </summary>
     [RoutePrefix("api/J3")]
     public class J3Controller : ApiController
     {
         /// <summary>
-        /// Encrypts a string using a simple Caesar cipher with a fixed shift.
+        /// Converts a temperature from Celsius to Fahrenheit or Fahrenheit to Celsius.
         /// </summary>
-        /// <param name="input">The string to encrypt</param>
-        /// <param name="shift">The number of positions to shift each character</param>
-        /// <returns>The encrypted string</returns>
+        /// <param name="temp">The temperature to convert</param>
+        /// <param name="scale">The scale to convert from (C for Celsius, F for Fahrenheit)</param>
+        /// <returns>The converted temperature</returns>
         /// <example>
-        /// GET ../api/J3/Encrypt/hello/2 -> "jgnnq"
-        /// GET ../api/J3/Encrypt/abc/1 -> "bcd"
+        /// GET ../api/J3/ConvertTemp/100/C -> "212 F"
+        /// GET ../api/J3/ConvertTemp/32/F -> "0 C"
         /// </example>
-        
         [HttpGet]
-        [Route("Encrypt/{input}/{shift}")]
-        public string Get(string input, int shift)
+        [Route("ConvertTemp/{temp}/{scale}")]
+        public string Get(float temp, string scale)
         {
-            char[] buffer = input.ToCharArray();
-            for (int i = 0; i < buffer.Length; i++)
+            string result;
+
+            if (scale.ToUpper() == "C")
             {
-                char letter = buffer[i];
-                letter = (char)(letter + shift);
-                if (letter > 'z')
-                {
-                    letter = (char)(letter - 26);
-                }
-                else if (letter < 'a')
-                {
-                    letter = (char)(letter + 26);
-                }
-                buffer[i] = letter;
+                // Convert Celsius to Fahrenheit
+                float fahrenheit = (temp * 9 / 5) + 32;
+                result = $"{temp} C is {fahrenheit} F";
             }
-            return new string(buffer);
+            else if (scale.ToUpper() == "F")
+            {
+                // Convert Fahrenheit to Celsius
+                float celsius = (temp - 32) * 5 / 9;
+                result = $"{temp} F is {celsius} C";
+            }
+            else
+            {
+                // Invalid scale input
+                result = "Invalid scale. Please use 'C' for Celsius or 'F' for Fahrenheit.";
+            }
+
+            return result;
         }
     }
 }
-
-       
